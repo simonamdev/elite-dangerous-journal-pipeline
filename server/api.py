@@ -4,7 +4,7 @@ from flask import Flask, request, abort
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
-# socketio = SocketIO(app)
+socketio = SocketIO(app)
 
 debug_mode = True
 api_header_name = 'API-KEY'
@@ -36,6 +36,11 @@ def receive_event():
     return 'Inserted: {}'.format(request.json), 201
 
 
+@socketio.on('my event', namespace='/test')
+def test_message(message):
+    emit('my response', {'data': message['data']})
+
+
 if __name__ == '__main__':
-    # socketio.run(app)
-    app.run(debug=debug_mode)
+    socketio.run(app, debug=debug_mode)
+    # app.run(debug=debug_mode)
