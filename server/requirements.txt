@@ -1,0 +1,4 @@
+requestst
+flask
+flask-socketio
+pytest
