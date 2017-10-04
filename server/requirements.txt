@@ -1,4 +1,4 @@
-requestst
+requests
 flask
 flask-socketio
 pytest
