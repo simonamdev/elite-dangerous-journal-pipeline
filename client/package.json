@@ -1,0 +1,11 @@
+{
+  "name": "elite-dangerous-journal-pipeline-client",
+  "version": "1.0.0",
+  "description": "The client to receive data from the ED Journal Pipeline API",
+  "main": "client.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "purrcat259",
+  "license": "MIT"
+}
