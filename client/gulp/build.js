@@ -34,7 +34,3 @@ gulp.task('build_client', () => {
         .pipe(uglify())
         .pipe(gulp.dest('./dist'));
 });
-
-let stripDirectory = (path) => {
-    path.dirname = '';
-}
