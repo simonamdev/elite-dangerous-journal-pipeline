@@ -1,3 +1,5 @@
+import rethinkdb as r
+
 from flask import Flask, request, abort
 from flask_socketio import SocketIO, emit
 

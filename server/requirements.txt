@@ -2,3 +2,4 @@ requestst
 flask
 flask-socketio
 pytest
+rethinkdb
