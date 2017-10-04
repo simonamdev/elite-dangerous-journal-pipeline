@@ -7,6 +7,10 @@ app = Flask(__name__)
 # socketio = SocketIO(app)
 
 
+def get_connection():
+    return r.connect(host='localhost', port=28015, db='test')
+
+
 @app.route('/')
 def index():
     return 'Hello'
@@ -14,9 +18,9 @@ def index():
 
 @app.route('/event', methods=['POST'])
 def receive_event():
-    print(request.json)
-    print(type(request.json))
-    return '', 201
+    with get_connection() as conn:
+        r.table('authors').insert(request.json).run(conn)
+    return 'Inserted: {}'.format(request.json), 201
 
 
 if __name__ == '__main__':
