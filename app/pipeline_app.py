@@ -1,4 +1,6 @@
 import json
+import os
+
 import requests
 
 from .journal_watcher.journal_watcher import JournalWatcher
@@ -34,11 +36,24 @@ class PipelineApp:
 
 
 if __name__ == '__main__':
-    app = PipelineApp(
-        journal_directory='C:\\Users\Simon\Saved Games\Frontier Developments\Elite Dangerous',
-        cmdr_name='purrcat',
-        team_name='wotsit',
-        api_key='test',
-        url='http://edjp.purrcat.space'
+    # pipeline_app = PipelineApp(
+    #     journal_directory=args.directory,
+    #     cmdr_name=args.cmdr,
+    #     team_name=args.team,
+    #     api_key=args.api_key,
+    #     url=args.url
+    # )
+    if not os.path.isfile('config.json'):
+        print('Config file not present')
+        exit(-1)
+    with open('config.json', 'r') as config_file:
+        data = config_file.read()
+    args = json.loads(data)
+    pipeline_app = PipelineApp(
+        journal_directory=args['directory'],
+        cmdr_name=args['cmdr'],
+        team_name=args['team'],
+        api_key=args['api_key'],
+        url=args['url']
     )
-    app.run()
+    pipeline_app.run()
