@@ -1,3 +1,4 @@
+import argparse
 import os
 import time
 
@@ -44,7 +45,13 @@ class JournalWatcher:
 
 
 if __name__ == '__main__':
-    watcher = JournalWatcher(directory='C:\\test')
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-dir',
+        dest='dir',
+        help='Journal Directory')
+    args = parser.parse_args()
+    watcher = JournalWatcher(directory=args.dir)
     while True:
         watcher.get_new_journal_file()
         time.sleep(1)
