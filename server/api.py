@@ -36,9 +36,9 @@ def receive_event():
     return 'Inserted: {}'.format(request.json), 201
 
 
-@socketio.on('my event', namespace='/test')
+@socketio.on('journalEvent', namespace='/pipeline')
 def test_message(message):
-    emit('my response', {'data': message['data']})
+    emit('journalEventResponse', {'received': True})
 
 
 if __name__ == '__main__':
