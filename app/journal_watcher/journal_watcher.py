@@ -24,20 +24,24 @@ class JournalWatcher:
         self._directory = str(directory)
         self._watch_delay = watch_delay
         self._journal_files = os.listdir(self._directory)
-        self._current_file_path = None
+        self._current_file_path = get_last_modified_file_path(self._directory)
 
     def watch_latest_file(self):
-        with open(self._current_file_path, 'r') as log_file:
+        print('Reading file at path: {}'.format(self._current_file_path))
+        with open(self._current_file_path, 'r') as journal_file:
             # Go to the end of the file
-            log_file.seek(0, 2)
+            print('Seeking to the end of the journal file')
+            journal_file.seek(0, 2)
             while True:
-                # stop looping if a new journal has been detected
                 new_file_path = self.get_new_journal_file()
+                # stop looping if a new journal has been detected
                 if new_file_path:
+                    print('Switching to file: {}'.format(new_file_path))
                     self._current_file_path = new_file_path
                     break
-                line = log_file.readline()
+                line = journal_file.readline()
                 if line and not line == '\n':
+                    print('Actual line: {}'.format(line))
                     yield line
                 time.sleep(self._watch_delay)
 
