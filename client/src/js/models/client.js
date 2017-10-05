@@ -50,20 +50,29 @@ export default class Client {
     setupJournalEvents() {
         this.socket.on('journalEvent', (data) => {
             console.log(data);
+            data = data['new_val']
             this.changeCount += 1;
             // Increase the change counter
-            document.getElementById('changeCount').appendChild(this.changeCount);
+            document.getElementById('changeCount').innerText = this.changeCount;
             // Add the change under the respective div if it exists
-            let teamDiv = document.getElementById(data['team']);
+            let teamDiv = document.getElementById(data['team_name']);
             if (!teamDiv) {
                 teamDiv = document.createElement('div');
-                teamDiv.id = data['team'];
+                teamDiv.id = data['team_name'];
+                let teamDivHeaderEl = document.createElement('h2');
+                teamDivHeaderEl.innerText = data['team_name'];
                 document.getElementById('changes').appendChild(teamDiv);
+                document.getElementById(data['team_name']).appendChild(teamDivHeaderEl);
             }
-            let dataString = JSON.stringify(data);
+            let nameEl = document.createElement('h3');
+            nameEl.innerText = data['cmdr_name'];
+            let dataRow = document.createElement('div');
+            let dataString = JSON.stringify(data['event']);
             let dataEl = document.createElement('p');
             dataEl.innerText = dataString;
-            teamDiv.appendChild(dataEl);
+            dataRow.appendChild(nameEl);
+            dataRow.appendChild(dataEl);
+            teamDiv.appendChild(dataRow);
         });
     }
 
