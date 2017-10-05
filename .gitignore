@@ -3,3 +3,5 @@
 __pycache__/
 client/dist
 client/node_modules
+server/static/js/overlay.min.js
+server/templates/overlay.min.html
