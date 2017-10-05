@@ -1,3 +1,4 @@
+import time
 import rethinkdb as r
 
 from flask import Flask, request, abort
@@ -24,6 +25,11 @@ def check_api_key():
         abort(401)
 
 
+"""
+API Routes
+"""
+
+
 @app.route('/')
 def index():
     return 'Hello'
@@ -36,8 +42,21 @@ def receive_event():
     return 'Inserted: {}'.format(request.json), 201
 
 
+"""
+Websocket Routes
+"""
+
+
+@socketio.on('latency', namespace='/pipeline')
+def latency_check(data):
+    current_time = int(round(time.time() * 1000))
+    print('Client time: {}, Server time now: {}, Latency: {}ms'.format(data['timestamp'], current_time, current_time - data['timestamp']))
+    emit('latencyResponse', {'timestamp': current_time, 'timestamp_client': data['timestamp']})
+
+
 @socketio.on('journalEvent', namespace='/pipeline')
 def test_message(message):
+    print(message)
     emit('journalEventResponse', {'received': True})
 
 

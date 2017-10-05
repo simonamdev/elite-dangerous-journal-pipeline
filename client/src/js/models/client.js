@@ -8,6 +8,7 @@ export default class Client {
 
     setup() {
         this.setupConnectionEvents();
+        this.setupHealthEvents();
         this.setupJournalEvents();
     }
 
@@ -35,6 +36,16 @@ export default class Client {
         });
     }
 
+    setupHealthEvents() {
+        this.socket.on('latencyResponse', (response) => {
+            let requestTime = response['timestamp_client'];
+            let serverTime = response['timestamp'];
+            let latency = serverTime - requestTime;
+            console.log(`Time sent: ${requestTime}, Time received: ${serverTime}, Latency: ${latency}ms`);
+            document.getElementById('latency').innerText = latency;
+        });
+    }
+
     setupJournalEvents() {
         this.socket.on('journalEventResponse', (data) => {
             console.log(data['received']);
@@ -43,6 +54,11 @@ export default class Client {
 
     close() {
         this.socket.close();
+    }
+
+    checkLatency() {
+        let timeNow = new Date().getTime();
+        this.socket.emit('latency', { timestamp: timeNow });
     }
 
     emitJournalEvent(data) {
