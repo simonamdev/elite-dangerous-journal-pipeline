@@ -1,0 +1,1 @@
+pyinstaller -F --console pipeline_app.py
