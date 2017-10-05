@@ -1,10 +1,10 @@
-import Client from './models/client';
+import DemoClient from './models/demo-client';
 
-let c = new Client('http://127.0.0.1:5000/pipeline');
+let client = new DemoClient('http://127.0.0.1:5000/pipeline');
 
-c.setup();
-c.checkLatency();
+client.setup();
+client.checkLatency();
 
 setInterval(() => {
-    c.checkLatency();
+    client.checkLatency();
 }, 3000);
