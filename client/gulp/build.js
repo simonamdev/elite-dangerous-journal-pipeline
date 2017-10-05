@@ -1,4 +1,5 @@
 import gulp from 'gulp';
+import replace from 'gulp-replace';
 import sourceMaps from 'gulp-sourcemaps';
 import browserify from 'browserify';
 import babelify from 'babelify';
@@ -19,6 +20,7 @@ gulp.task('build_js', () => {
         .transform(babelify)
         .bundle()
         .pipe(source('./src/js/overlay.js'))
+        .pipe(replace('http://127.0.0.1:5000/pipeline', 'http://edjp.purrcat.space/pipeline'))
         .pipe(buffer())
         .pipe(rename(stripDirectory))
         .pipe(gulp.dest('./dist'))
