@@ -9,14 +9,14 @@ def get_difference(a, b):
 
 
 def get_last_modified_file_path(directory):
-    last_modified_file = sorted(
+    last_modified_files = sorted(
         [
             dict(file=file, timestamp=os.stat(os.path.join(str(directory), file)).st_mtime) for file in os.listdir(str(directory))
         ],
         key=lambda x: x['timestamp'],
         reverse=True
-    )[0]
-    return os.path.join(str(directory), last_modified_file['file'])
+    )
+    return os.path.join(str(directory), last_modified_files[0]['file'])
 
 
 class JournalWatcher:
@@ -41,7 +41,6 @@ class JournalWatcher:
                     break
                 line = journal_file.readline()
                 if line and not line == '\n':
-                    print('Actual line: {}'.format(line))
                     yield line
                 time.sleep(self._watch_delay)
 
