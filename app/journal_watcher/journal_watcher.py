@@ -8,14 +8,25 @@ def get_difference(a, b):
     return [x for x in b if x not in s]
 
 
+def get_last_modified_file_path(directory):
+    last_modified_file = sorted(
+        [
+            dict(file=file, timestamp=os.stat(os.path.join(str(directory), file)).st_mtime) for file in os.listdir(str(directory))
+        ],
+        key=lambda x: x['timestamp'],
+        reverse=True
+    )[0]
+    return os.path.join(str(directory), last_modified_file['file'])
+
+
 class JournalWatcher:
     def __init__(self, directory, watch_delay=0.1):
-        self._directory = directory
+        self._directory = str(directory)
         self._watch_delay = watch_delay
-        self._journal_files = os.listdir(directory)
+        self._journal_files = os.listdir(self._directory)
         self._current_file_path = None
 
-    def watch_file(self):
+    def watch_latest_file(self):
         with open(self._current_file_path, 'r') as log_file:
             # Go to the end of the file
             log_file.seek(0, 2)
