@@ -21,19 +21,30 @@ def watch_file(file_path, delay=0.1):
 class JournalWatcher:
     def __init__(self, directory):
         self._directory = directory
-        self._journal_files = []
+        self._journal_files = os.listdir(directory)
         self._current_file = None
 
     def watch(self):
         pass
 
-    def watch_for_new_journal_files(self):
-        files = os.scandir(self._directory)
+    def get_new_journal_file(self):
+        files = os.listdir(self._directory)
+        print(files)
+        print(self._journal_files)
         if not sorted(files) == sorted(self._journal_files):
-
-            print('New journal file detected: {}')
+            new_files = get_difference(self._journal_files, files)
+            # Update the files seen by the class
+            self._journal_files = files
+            # Checking the length takes deletions into consideration
+            if len(new_files):
+                new_file = new_files[0]
+                print('New journal file detected: {}'.format(new_file))
+                return new_file
+        return None
 
 
 if __name__ == '__main__':
-    watcher = JournalWatcher(directory='')
-    watcher.watch()
+    watcher = JournalWatcher(directory='C:\\test')
+    while True:
+        watcher.get_new_journal_file()
+        time.sleep(1)
