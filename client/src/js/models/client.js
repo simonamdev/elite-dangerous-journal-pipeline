@@ -4,6 +4,7 @@ export default class Client {
     constructor(url) {
         this.url = url;
         this.socket = io(url);
+        this.changeCount = 0;
     }
 
     setup() {
@@ -49,9 +50,20 @@ export default class Client {
     setupJournalEvents() {
         this.socket.on('journalEvent', (data) => {
             console.log(data);
-            let change = document.createElement('p');
-            change.innerText = JSON.stringify(data);
-            document.getElementById('changes').appendChild(change);
+            this.changeCount += 1;
+            // Increase the change counter
+            document.getElementById('changeCount').appendChild(this.changeCount);
+            // Add the change under the respective div if it exists
+            let teamDiv = document.getElementById(data['team']);
+            if (!teamDiv) {
+                teamDiv = document.createElement('div');
+                teamDiv.id = data['team'];
+                document.getElementById('changes').appendChild(teamDiv);
+            }
+            let dataString = JSON.stringify(data);
+            let dataEl = document.createElement('p');
+            dataEl.innerText = dataString;
+            teamDiv.appendChild(dataEl);
         });
     }
 
