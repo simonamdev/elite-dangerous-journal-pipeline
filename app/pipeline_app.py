@@ -1,13 +1,5 @@
 import json
-import os
-
 import requests
-
-from argparse import ArgumentParser
-
-import sys
-from gooey import Gooey
-
 import os
 import time
 
