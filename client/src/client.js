@@ -12,9 +12,16 @@ socket.on('disconnect', () => {
     socket.close();
 });
 
-socket.on('connect', () => {
+let emitMyEvent = () => {
     socket.emit('my event', { data: 'hello' });
-    socket.on('my response', (res) => {
-        console.log(res);
-    });
+};
+
+socket.on('connect', () => {
+    emitMyEvent();
 });
+
+socket.on('my response', (res) => {
+    console.log(res);
+});
+
+setInterval(emitMyEvent, 1000)
