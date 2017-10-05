@@ -4,6 +4,7 @@ from threading import Thread, Event
 import rethinkdb as r
 
 from flask import Flask, request, abort
+from flask import render_template
 from flask_socketio import SocketIO, emit
 
 app = Flask(__name__)
@@ -41,7 +42,6 @@ def get_connection():
     return r.connect(host='localhost', port=28015, db='test')
 
 
-@app.before_request
 def check_api_key():
     request_api_key = request.headers.get(api_header_name)
     if not api_key == request_api_key:
@@ -55,11 +55,17 @@ API Routes
 
 @app.route('/')
 def index():
-    return 'Hello'
+    return 'Index Page'
+
+
+@app.route('/overlay')
+def overlay():
+    return render_template('overlay.min.html')
 
 
 @app.route('/event', methods=['POST'])
 def receive_event():
+    check_api_key()
     with get_connection() as conn:
         r.table('authors').insert(request.json).run(conn)
     return 'Inserted: {}'.format(request.json), 201
