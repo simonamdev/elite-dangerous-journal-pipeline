@@ -29,8 +29,6 @@ class JournalWatcher:
 
     def get_new_journal_file(self):
         files = os.listdir(self._directory)
-        print(files)
-        print(self._journal_files)
         if not sorted(files) == sorted(self._journal_files):
             new_files = get_difference(self._journal_files, files)
             # Update the files seen by the class
