@@ -20,7 +20,6 @@ gulp.task('build_js', () => {
         .transform(babelify)
         .bundle()
         .pipe(source('./src/js/overlay.js'))
-        .pipe(replace('http://127.0.0.1:5000/pipeline', 'http://edjp.purrcat.space/pipeline'))
         .pipe(buffer())
         .pipe(rename(stripDirectory))
         .pipe(gulp.dest('./dist'))

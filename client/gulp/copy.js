@@ -11,5 +11,11 @@ gulp.task('copy_html', () => {
 
 gulp.task('copy_js', () => {
     return gulp.src('./dist/overlay.min.js')
+        .pipe(replace('http://127.0.0.1:5000/pipeline', 'http://edjp.purrcat.space/pipeline'))
+        .pipe(gulp.dest('../server/static/js/'));
+});
+
+gulp.task('copy_dev', ['copy_html'], () => {
+    return gulp.src('./dist/overlay.min.js')
         .pipe(gulp.dest('../server/static/js/'));
 });
