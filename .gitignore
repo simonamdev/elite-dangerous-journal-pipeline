@@ -6,3 +6,4 @@ client/node_modules
 server/static/js/overlay.min.js
 server/templates/overlay.min.html
 app/build/
+app/dist/
