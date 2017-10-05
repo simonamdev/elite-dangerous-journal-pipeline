@@ -55,24 +55,21 @@ export default class Client {
             // Increase the change counter
             document.getElementById('changeCount').innerText = this.changeCount;
             // Add the change under the respective div if it exists
-            let teamDiv = document.getElementById(data['team_name']);
-            if (!teamDiv) {
-                teamDiv = document.createElement('div');
-                teamDiv.id = data['team_name'];
-                let teamDivHeaderEl = document.createElement('h2');
-                teamDivHeaderEl.innerText = data['team_name'];
-                document.getElementById('changes').appendChild(teamDiv);
-                document.getElementById(data['team_name']).appendChild(teamDivHeaderEl);
-            }
-            let nameEl = document.createElement('h3');
-            nameEl.innerText = data['cmdr_name'];
-            let dataRow = document.createElement('div');
-            let dataString = JSON.stringify(data['event']);
+            let eventRowEl = document.createElement('div');
+            let teamEl = document.createElement('h2');
+            teamEl.innerText = data['team_name'];
+            let cmdrEl = document.createElement('h3');
+            cmdrEl.innerText = data['cmdr_name'];
             let dataEl = document.createElement('p');
-            dataEl.innerText = dataString;
-            dataRow.appendChild(nameEl);
-            dataRow.appendChild(dataEl);
-            teamDiv.appendChild(dataRow);
+            dataEl.innerText = JSON.stringify(data['event']);
+            let horizontalRuleEl = document.createElement('hr');
+
+            eventRowEl.appendChild(teamEl);
+            eventRowEl.appendChild(cmdrEl);
+            eventRowEl.appendChild(dataEl);
+            eventRowEl.appendChild(horizontalRuleEl);
+            document.getElementById('changes').appendChild(eventRowEl);
+            window.scrollTo(0, document.body.scrollHeight);
         });
     }
 
