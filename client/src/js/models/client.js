@@ -41,14 +41,17 @@ export default class Client {
             let requestTime = response['timestamp_client'];
             let serverTime = response['timestamp'];
             let latency = serverTime - requestTime;
-            console.log(`Time sent: ${requestTime}, Time received: ${serverTime}, Latency: ${latency}ms`);
+            // console.log(`Time sent: ${requestTime}, Time received: ${serverTime}, Latency: ${latency}ms`);
             document.getElementById('latency').innerText = latency;
         });
     }
 
     setupJournalEvents() {
-        this.socket.on('journalEventResponse', (data) => {
-            console.log(data['received']);
+        this.socket.on('journalEvent', (data) => {
+            console.log(data);
+            let change = document.createElement('p');
+            change.innerText = JSON.stringify(data);
+            document.getElementById('changes').appendChild(change);
         });
     }
 
