@@ -1,5 +1,5 @@
 .idea/
-server/test/.cache
-server/test/__pycache__/
+.cache/
+__pycache__/
 client/dist
 client/node_modules
