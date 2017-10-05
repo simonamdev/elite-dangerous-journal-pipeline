@@ -11,6 +11,8 @@ app = Flask(__name__)
 socketio = SocketIO(app)
 
 debug_mode = True
+db_name = 'test'
+table_name = 'testtable'
 api_header_name = 'API-KEY'
 api_key = 'test'
 if not debug_mode:
@@ -29,7 +31,7 @@ class JournalEventReaderThread(Thread):
     def read_changes(self):
         while not thread_stop_event.is_set():
             with get_connection() as conn:
-                for change in r.table('authors').changes().run(conn):
+                for change in r.table(table_name).changes().run(conn):
                     print(change)
                     socketio.emit('journalEvent', change, namespace='/pipeline')
                     time.sleep(self.delay)
@@ -39,7 +41,7 @@ class JournalEventReaderThread(Thread):
 
 
 def get_connection():
-    return r.connect(host='localhost', port=28015, db='test')
+    return r.connect(host='localhost', port=28015, db=db_name)
 
 
 def check_api_key():
@@ -67,7 +69,7 @@ def overlay():
 def receive_event():
     check_api_key()
     with get_connection() as conn:
-        r.table('authors').insert(request.json).run(conn)
+        r.table(table_name).insert(request.json).run(conn)
     return 'Inserted: {}'.format(request.json), 201
 
 
@@ -85,6 +87,23 @@ def latency_check(data):
 
 if __name__ == '__main__':
     print('Client connected')
+    # Attempt to create the table
+    conn = get_connection()
+    try:
+        r.db_create(db_name).run(conn)
+        print('Created Database: {}'.format(db_name))
+    except r.RqlRuntimeError:
+        print('Database: {} already exist'.format(db_name))
+    finally:
+        conn.close()
+    conn = get_connection()
+    try:
+        r.db(db_name).table_create(table_name).run(conn)
+        print('Created Table: {}'.format(table_name))
+    except r.RqlRuntimeError:
+        print('Table: {} already exist'.format(table_name))
+    finally:
+        conn.close()
     if not thread.is_alive():
         print('Starting reader thread')
         thread = JournalEventReaderThread()
