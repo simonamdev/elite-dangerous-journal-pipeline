@@ -70,16 +70,6 @@ Websocket Routes
 """
 
 
-@socketio.on('connect', namespace='/pipeline')
-def initialise_reader():
-    global thread
-    print('Client connected')
-    if not thread.is_alive():
-        print('Starting reader thread')
-        thread = JournalEventReaderThread()
-        thread.start()
-
-
 @socketio.on('latency', namespace='/pipeline')
 def latency_check(data):
     current_time = int(round(time.time() * 1000))
@@ -88,5 +78,10 @@ def latency_check(data):
 
 
 if __name__ == '__main__':
+    print('Client connected')
+    if not thread.is_alive():
+        print('Starting reader thread')
+        thread = JournalEventReaderThread()
+        thread.start()
     socketio.run(app, debug=debug_mode)
     # app.run(debug=debug_mode)
