@@ -1,0 +1,7 @@
+{
+  "database_name": "test",
+  "table_name": "testtable",
+  "debug": true,
+  "api_key": "test",
+  "reader_thread_delay": 0.25
+}
