@@ -115,7 +115,7 @@ class PipelineApp:
             }
             for event in self._journal_watcher.watch_latest_file():
                 event = json.loads(event)
-                if event['event'] not in self._events_required and len(self._events_required) == 0:
+                if event['event'] not in self._events_required and not len(self._events_required) == 0:
                     print('Skipping event: {}'.format(event['event']))
                     continue
                 print('Event detected: {}'.format(event['event']))
