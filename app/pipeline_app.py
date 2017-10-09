@@ -3,6 +3,7 @@ import json
 import time
 import requests
 
+from threading import Thread
 
 def get_difference(a, b):
     s = set(a)
@@ -59,34 +60,70 @@ class JournalWatcher:
         return None
 
 
-headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+class EventWhitelist:
+    def __init__(self, file_path):
+        self._file_path = file_path
+        self._required_events = []
+        self._validate_events_file()
+        self._read_required_events_file()
+
+    def _validate_events_file(self):
+        if not os.path.isfile(self._file_path):
+            raise FileNotFoundError('Events whitelist file is not at: {}'.format(self._file_path))
+
+    def _read_required_events_file(self):
+        with open(self._file_path, 'r') as events_file:
+            for line in events_file:
+                self._required_events.append(line.strip())
+        print('White listing following events: {}'.format(self._required_events))
+
+    def get_required_events(self):
+        return self._required_events
 
 
 class PipelineApp:
-    def __init__(self, journal_directory, cmdr_name, team_name, api_key, url):
+    def __init__(self, journal_directory, events_required, cmdr_name, team_name, api_key, url):
         self._journal_directory = journal_directory
+        self._events_required = events_required
         self._cmdr_name = cmdr_name
         self._team_name = team_name
-        self._api_key = api_key
+        self._headers = {
+            'Content-type': 'application/json',
+            'Accept': 'text/plain',
+            'API-KEY': api_key
+        }
         self._url = url
+        self._events_url = url + '/event'
         self._journal_watcher = JournalWatcher(directory=self._journal_directory)
 
     def run(self):
-        headers['API-KEY'] = self._api_key
-        event_url = self._url + '/event'
         while True:
             data = {
                 'cmdr_name': self._cmdr_name,
                 'team_name': self._team_name
             }
             for event in self._journal_watcher.watch_latest_file():
+                event = json.loads(event)
+                if event['event'] not in self._events_required:
+                    print('Skipping event: {}'.format(event['event']))
+                    continue
                 print('Event detected: {}'.format(event))
                 data['event'] = event
                 try:
-                    response = requests.post(url=event_url, data=json.dumps(data), headers=headers, timeout=2)
-                    print('Response: {}'.format(response.status_code))
+                    # response = requests.post(url=event_url, data=json.dumps(data), headers=headers, timeout=2)
+                    Thread(target=self.send_event_to_api, args=[data, 2]).start()
                 except Exception as e:
                     print(e)
+
+    def send_event_to_api(self, post_data, timeout):
+        response = requests.post(
+            url=self._events_url,
+            data=json.dumps(post_data),
+            headers=self._headers,
+            timeout=timeout
+        )
+        print(response.text)
+        return print('Response: {}'.format(response.status_code))
 
 
 if __name__ == '__main__':
@@ -96,8 +133,10 @@ if __name__ == '__main__':
     with open('config.json', 'r') as config_file:
         data = config_file.read()
     args = json.loads(data)
+    events_required = EventWhitelist(file_path='events.txt').get_required_events()
     pipeline_app = PipelineApp(
         journal_directory=args['directory'],
+        events_required=events_required,
         cmdr_name=args['cmdr'],
         team_name=args['team'],
         api_key=args['api_key'],
