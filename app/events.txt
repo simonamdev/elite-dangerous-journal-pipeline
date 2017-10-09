@@ -1,6 +1,6 @@
 LoadGame
 Docked
-Liftoff
+Undocked
 Died
 FSDJump
 HeatDamage
