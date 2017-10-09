@@ -1,5 +1,5 @@
 {
-  "directory": "C:\\Users\\Simon\\Saved Games\\Frontier Developments\\Elite Dangerous",
+  "directory": "%USERPROFILE%\\Saved Games\\Frontier Developments\\Elite Dangerous",
   "cmdr": "Insert Commander Name Here",
   "team": "SOV",
   "api_key": "test",

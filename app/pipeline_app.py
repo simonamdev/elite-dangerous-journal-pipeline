@@ -5,6 +5,7 @@ import requests
 
 from threading import Thread
 
+
 def get_difference(a, b):
     s = set(a)
     return [x for x in b if x not in s]
@@ -23,10 +24,16 @@ def get_last_modified_file_path(directory):
 
 class JournalWatcher:
     def __init__(self, directory, watch_delay=0.1):
-        self._directory = str(directory)
+        self._directory = self._parse_journal_directory(directory=str(directory))
         self._watch_delay = watch_delay
         self._journal_files = os.listdir(self._directory)
         self._current_file_path = get_last_modified_file_path(self._directory)
+
+    @staticmethod
+    def _parse_journal_directory(directory):
+        if 'USERPROFILE' in directory:
+            return directory.replace('%USERPROFILE%', os.getenv('USERPROFILE'))
+        return directory
 
     def watch_latest_file(self):
         print('Reading file at path: {}'.format(self._current_file_path))
@@ -107,7 +114,7 @@ class PipelineApp:
                 if event['event'] not in self._events_required:
                     print('Skipping event: {}'.format(event['event']))
                     continue
-                print('Event detected: {}'.format(event))
+                print('Event detected: {}'.format(event['event']))
                 data['event'] = event
                 try:
                     # response = requests.post(url=event_url, data=json.dumps(data), headers=headers, timeout=2)
@@ -122,7 +129,7 @@ class PipelineApp:
             headers=self._headers,
             timeout=timeout
         )
-        print(response.text)
+        # print(response.text)
         return print('Response: {}'.format(response.status_code))
 
 
