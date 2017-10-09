@@ -12,6 +12,7 @@ socketio = SocketIO(app)
 
 api_header_name = 'API-KEY'
 
+print('Reading Configuration file')
 # Read in config values
 with open('api_config.json', 'r') as config_file:
     config = json.loads(config_file.read())
