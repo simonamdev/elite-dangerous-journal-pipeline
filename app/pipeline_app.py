@@ -82,7 +82,9 @@ class EventWhitelist:
         with open(self._file_path, 'r') as events_file:
             for line in events_file:
                 self._required_events.append(line.strip())
-        print('White listing following events: {}'.format(self._required_events))
+        print('White listing following events:')
+        for event in self._required_events:
+            print('> {}'.format(event))
 
     def get_required_events(self):
         return self._required_events
