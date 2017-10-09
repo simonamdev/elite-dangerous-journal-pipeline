@@ -82,6 +82,8 @@ class EventWhitelist:
         with open(self._file_path, 'r') as events_file:
             for line in events_file:
                 self._required_events.append(line.strip())
+        if len(self._required_events) == 0:
+            print('No white list provided, allow all events')
         print('White listing following events:')
         for event in self._required_events:
             print('> {}'.format(event))
@@ -113,7 +115,7 @@ class PipelineApp:
             }
             for event in self._journal_watcher.watch_latest_file():
                 event = json.loads(event)
-                if event['event'] not in self._events_required:
+                if event['event'] not in self._events_required and len(self._events_required) == 0:
                     print('Skipping event: {}'.format(event['event']))
                     continue
                 print('Event detected: {}'.format(event['event']))
