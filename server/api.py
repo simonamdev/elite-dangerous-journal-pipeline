@@ -90,7 +90,6 @@ def latency_check(data):
 
 
 if __name__ == '__main__':
-    print('Client connected')
     # Attempt to create the table
     with get_connection() as conn:
         try:
