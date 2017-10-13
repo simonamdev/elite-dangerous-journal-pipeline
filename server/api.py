@@ -30,7 +30,8 @@ thread_stop_event = Event()
 
 class JournalEventReaderThread(Thread):
     def __init__(self):
-        self.delay = 1
+        # self.delay = 1
+        self.delay = 0.2
         super(JournalEventReaderThread, self).__init__()
 
     def read_changes(self):
